@@ -31,9 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.GET,"/files/", "/users/","/animes/").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/users/").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/animes/", "/files/").permitAll()
-                .mvcMatchers(HttpMethod.DELETE, "/anime/", "/user/", "/file/").permitAll()
-                .anyRequest().permitAll()
+                .mvcMatchers(HttpMethod.POST, "/animes/", "/files/").authenticated()
+                .mvcMatchers(HttpMethod.DELETE, "/anime/", "/user/", "/file/").authenticated()
+                .anyRequest().authenticated()
                 .and().httpBasic();
     }
 

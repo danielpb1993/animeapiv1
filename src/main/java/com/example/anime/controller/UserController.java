@@ -26,8 +26,7 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-//    @AutowiredProjectionUserDetail
-//    private FavoriteRepository favoriteRepository;
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -57,16 +56,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(DisplayMessage.message(String.format("Ja existeix un usuari amb el nom '%s'", newUser.username)));
     }
-
-//    @PostMapping("/{id}/favorite")
-//    public ResponseEntity<?> addFavorite(@RequestBody Favorite favorite, Authentication authentication) {
-//        if (userRepository.findByUsername(authentication.getName()).userid.equals(favorite.userid)){
-//            favoriteRepository.save(favorite);
-//            return ResponseEntity.ok().build();
-//        }
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                .body(DisplayMessage.message("You don't have the correct privilege to do this action"));
-//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID id) {

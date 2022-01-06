@@ -3,7 +3,6 @@ package com.example.anime.controller;
 import com.example.anime.domain.dto.DisplayMessage;
 import com.example.anime.domain.dto.ListResult;
 import com.example.anime.domain.model.Anime;
-import com.example.anime.domain.model.projections.ProjectionAnime;
 import com.example.anime.repository.AnimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
