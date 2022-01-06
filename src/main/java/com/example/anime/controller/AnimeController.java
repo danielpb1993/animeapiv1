@@ -3,6 +3,7 @@ package com.example.anime.controller;
 import com.example.anime.domain.dto.DisplayMessage;
 import com.example.anime.domain.dto.ListResult;
 import com.example.anime.domain.model.Anime;
+import com.example.anime.domain.model.projections.ProjectionAnime;
 import com.example.anime.repository.AnimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,14 +21,14 @@ public class AnimeController {
 
     @GetMapping("/")
     public ResponseEntity<?> getAllAnime() {
-        List<Anime> animeList = animeRepository.findBy();
+        List<ProjectionAnime> animeList = animeRepository.findBy();
         return ResponseEntity.ok().body(ListResult.list(animeList));
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAnime(@PathVariable UUID id) {
-        Anime anime = animeRepository.findByAnimeid(id);
+        ProjectionAnime anime = animeRepository.findByAnimeid(id);
         if (anime != null) {
             return ResponseEntity.ok().body(anime);
         }

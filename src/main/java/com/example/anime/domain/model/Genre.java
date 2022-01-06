@@ -7,16 +7,15 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "author")
-public class Author {
+@Table(name = "genre")
+public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public UUID authorid;
-    public String name;
-    public String imageurl;
+    public UUID genreid;
+    public String label;
 
-    @ManyToMany(mappedBy = "authors")
-    @JsonIgnoreProperties("authors")
+    @ManyToMany(mappedBy = "genres")
+    @JsonIgnoreProperties("genres")
     public Set<Anime>animes;
 
 
