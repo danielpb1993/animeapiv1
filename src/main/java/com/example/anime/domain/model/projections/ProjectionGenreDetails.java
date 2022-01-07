@@ -7,12 +7,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @JsonPropertyOrder({"genreid", "label"})
-public interface ProjectionGenre {
+public interface ProjectionGenreDetails {
 
     UUID getGenreid();
     String getLabel();
 
-    @JsonIgnoreProperties({"genres", "description", "year_release"})
-    Set<ProjectionAnimeShort> getAnimes();
+    @JsonIgnoreProperties("genres")
+    Set<ProjectionAnimeDetails> getAnimes();
 
 }

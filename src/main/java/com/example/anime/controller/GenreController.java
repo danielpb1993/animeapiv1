@@ -5,6 +5,7 @@ package com.example.anime.controller;
 import com.example.anime.domain.dto.DisplayMessage;
 import com.example.anime.domain.dto.ListResult;
 import com.example.anime.domain.model.projections.ProjectionGenre;
+import com.example.anime.domain.model.projections.ProjectionGenreDetails;
 import com.example.anime.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getGenre(@PathVariable UUID id) {
-        ProjectionGenre genre = genreRepository.findByGenreid(id);
+        ProjectionGenreDetails genre = genreRepository.findByGenreid(id);
         if (genre != null) {
             return ResponseEntity.ok().body(genre);
         }

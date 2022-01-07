@@ -38,7 +38,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable UUID id) {
-        return ResponseEntity.ok().body(ListResult.list(userRepository.findByUserid(id, ProjectionUserDetail.class)));
+        return ResponseEntity.ok().body(ListResult.list(userRepository.findByUserid(id, ProjectionUser.class)));
     }
 
     @PostMapping("/")
