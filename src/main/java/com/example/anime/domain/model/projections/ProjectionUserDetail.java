@@ -11,6 +11,7 @@ public interface ProjectionUserDetail {
     UUID getUserid();
     String getUsername();
 
-
+    @JsonIgnoreProperties("favoriteby")
+    Set<ProjectionAnime> getFavorites();
 
 }

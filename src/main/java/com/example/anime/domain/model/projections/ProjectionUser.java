@@ -1,6 +1,6 @@
 package com.example.anime.domain.model.projections;
 
-//import com.example.animeapi.domains.models.Favorite;
+import com.example.anime.domain.model.Favorite;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -13,6 +13,7 @@ public interface ProjectionUser {
     UUID getUserid();
     String getUsername();
 
-
+    @JsonIgnoreProperties("favoriteby")
+    Set<ProjectionAnimeShort> getFavorites();
 
 }
