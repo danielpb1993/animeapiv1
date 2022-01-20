@@ -5,6 +5,7 @@ import com.example.anime.domain.dto.ListResult;
 import com.example.anime.domain.dto.UserResult;
 import com.example.anime.domain.model.Favorite;
 import com.example.anime.domain.model.User;
+import com.example.anime.domain.model.projections.ProjectionFavorite;
 import com.example.anime.domain.model.projections.ProjectionUser;
 import com.example.anime.domain.model.projections.ProjectionUserDetail;
 import com.example.anime.repository.FavoriteRepository;
@@ -44,6 +45,19 @@ public class UserController {
         return ResponseEntity.ok().body(ListResult.list(userRepository.findByUserid(id, ProjectionUserDetail.class)));
     }
 
+    @GetMapping("/favorites/")
+    public ResponseEntity<?> getFavorites(Authentication authentication) {
+        if (authentication != null) {
+            User authenticatedUser = userRepository.findByUsername(authentication.getName());
+
+            if (authenticatedUser != null) {
+                return ResponseEntity.ok().body(userRepository.findByUsername(authentication.getName(), ProjectionFavorite.class));
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("No autorizado"));
+    }
+
     @PostMapping("/")
     public ResponseEntity<?> addUser(@RequestBody User newUser) {
 
@@ -60,12 +74,21 @@ public class UserController {
                 .body(DisplayMessage.message(String.format("Ja existeix un usuari amb el nom '%s'", newUser.username)));
     }
 
-    @PostMapping("/{id}/favorite")
+    @PostMapping("/favorites")
     public ResponseEntity<?> addFavorite(@RequestBody Favorite favorite, Authentication authentication) {
-        if (userRepository.findByUsername(authentication.getName()).userid.equals(favorite.userid)){
-            favoriteRepository.save(favorite);
-            return ResponseEntity.ok().build();
+        if (authentication != null) {
+            User authenticatedUser = userRepository.findByUsername(authentication.getName());
+            if (authenticatedUser != null) {
+                Favorite favorited = new Favorite();
+                favorited.animeid = authenticatedUser.userid;
+                favoriteRepository.save(favorite);
+                return ResponseEntity.ok().build();
+            }
         }
+//        if (userRepository.findByUsername(authentication.getName()).userid.equals(favorite.userid)){
+//            favoriteRepository.save(favorite);
+//            return ResponseEntity.ok().build();
+//        }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(DisplayMessage.message("You don't have the correct privilege to do this action"));
     }

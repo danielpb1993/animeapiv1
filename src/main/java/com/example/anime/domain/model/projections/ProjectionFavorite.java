@@ -8,11 +8,6 @@ import java.util.Set;
 
 @JsonPropertyOrder({"name", "description", "type"})
 public interface ProjectionFavorite {
-    String getName();
-    String getType();
-
-    @JsonIgnoreProperties({"animes", "authorid","imageurl"})
-    Set<ProjectionAuthor> getAuthors();
-
-
+    @JsonIgnoreProperties("favorited")
+    Set<ProjectionAnimeFavorited> getFavorites();
 }
