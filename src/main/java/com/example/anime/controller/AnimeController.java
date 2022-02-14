@@ -28,7 +28,7 @@ public class AnimeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAnime(@PathVariable UUID id) {
-        ProjectionAnime anime = animeRepository.findByAnimeid(id);
+        ProjectionAnime anime = animeRepository.findByAnimeid(id, ProjectionAnime.class);
         if (anime != null) {
             return ResponseEntity.ok().body(anime);
         }

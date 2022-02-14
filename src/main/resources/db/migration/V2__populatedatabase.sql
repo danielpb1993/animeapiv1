@@ -39,4 +39,8 @@ INSERT INTO anime_genre VALUES
     ((SELECT animeid FROM anime WHERE name='Anime III'),(SELECT genreid FROM genre WHERE label='Genre III'));
 
 INSERT INTO favorite VALUES
-   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime III'));
+   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime IV')),
+   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime I')),
+   ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Anime IV')),
+   ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Anime III')),
+   ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Anime II'));

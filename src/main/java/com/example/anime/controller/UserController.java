@@ -8,6 +8,7 @@ import com.example.anime.domain.model.User;
 import com.example.anime.domain.model.projections.ProjectionFavorite;
 import com.example.anime.domain.model.projections.ProjectionUser;
 import com.example.anime.domain.model.projections.ProjectionUserDetail;
+import com.example.anime.repository.AnimeRepository;
 import com.example.anime.repository.FavoriteRepository;
 import com.example.anime.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +21,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
+    private AnimeRepository animeRepository;
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
+    private UserRepository userRepository;
     @Autowired
     private FavoriteRepository favoriteRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/")
     public ResponseEntity<?> getAllUser() {
@@ -45,18 +47,19 @@ public class UserController {
         return ResponseEntity.ok().body(ListResult.list(userRepository.findByUserid(id, ProjectionUserDetail.class)));
     }
 
-    @GetMapping("/favorites/")
-    public ResponseEntity<?> getFavorites(Authentication authentication) {
-        if (authentication != null) {
-            User authenticatedUser = userRepository.findByUsername(authentication.getName());
 
-            if (authenticatedUser != null) {
-                return ResponseEntity.ok().body(userRepository.findByUsername(authentication.getName(), ProjectionFavorite.class));
-            }
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("No autorizado"));
+    @GetMapping("/favorites")
+    public ResponseEntity<?>getFavorite(Authentication authentication){
+        UUID userID = userRepository.findByUsername(authentication.getName()).userid;
+        List<Favorite> favorites = favoriteRepository.findByUserid(userID);
+        List<ProjectionFavorite> favoritesAnime = favorites
+                .stream()
+                .map(fav -> {
+                    return animeRepository.findByAnimeid(fav.animeid, ProjectionFavorite.class);
+                }).collect(Collectors.toList());
+        return ResponseEntity.ok().body(ListResult.list(favoritesAnime));
     }
+
 
     @PostMapping("/")
     public ResponseEntity<?> addUser(@RequestBody User newUser) {
@@ -76,22 +79,16 @@ public class UserController {
 
     @PostMapping("/favorites")
     public ResponseEntity<?> addFavorite(@RequestBody Favorite favorite, Authentication authentication) {
-        if (authentication != null) {
-            User authenticatedUser = userRepository.findByUsername(authentication.getName());
-            if (authenticatedUser != null) {
-                Favorite favorited = new Favorite();
-                favorited.animeid = authenticatedUser.userid;
-                favoriteRepository.save(favorite);
-                return ResponseEntity.ok().build();
-            }
+        UUID userID = userRepository.findByUsername(authentication.getName()).userid;
+        if (animeRepository.findByAnimeid(favorite.animeid, UUID.class) != null){
+            favorite.userid =  userID;
+            favoriteRepository.save(favorite);
+            return ResponseEntity.ok().body(favorite);
         }
-//        if (userRepository.findByUsername(authentication.getName()).userid.equals(favorite.userid)){
-//            favoriteRepository.save(favorite);
-//            return ResponseEntity.ok().build();
-//        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(DisplayMessage.message("You don't have the correct privilege to do this action"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id '%s'", favorite.animeid)));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
         User user = userRepository.findById(id).orElse(null);
@@ -102,7 +99,7 @@ public class UserController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(DisplayMessage.message(String.format("No s'ha trobat l'usuari amd id %s", id)));
+                .body(DisplayMessage.message(String.format("No s'ha trobat l'usuari amd id '%s'", id)));
     }
 
     @DeleteMapping("/")
@@ -110,4 +107,22 @@ public class UserController {
         userRepository.deleteAll();
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/favorites/{id}")
+    public ResponseEntity<?> deleteFavorite(@PathVariable UUID id, Authentication authentication) {
+        User user = userRepository.findByUsername(authentication.getName());
+
+        if (user != null) {
+            Favorite favorite = new Favorite();
+            favorite.userid =  user.userid;
+            favorite.animeid = id;
+            favoriteRepository.delete(favorite);
+            return ResponseEntity.ok()
+                    .body(DisplayMessage.message(String.format("S'ha eliminat dels favorits l'anime amd id '%s'", id)));
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(DisplayMessage.message(String.format("No s 'ha trobat l'id '%s'", id)));
+    }
+
 }
