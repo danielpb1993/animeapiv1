@@ -124,5 +124,4 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(DisplayMessage.message(String.format("No s 'ha trobat l'id '%s'", id)));
     }
-
 }
