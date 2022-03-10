@@ -1,0 +1,11 @@
+package com.example.anime.domain.model.compositekeys;
+
+import java.io.Serializable;
+import java.util.UUID;
+
+public class KeyAnimeUserGenre implements Serializable {
+
+    public UUID animeid;
+    public UUID userid;
+    public UUID genreid;
+}

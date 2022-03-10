@@ -1,5 +1,7 @@
 package com.example.anime.controller;
 
+import com.example.anime.RecommendedService;
+import com.example.anime.UserService;
 import com.example.anime.domain.dto.DisplayMessage;
 import com.example.anime.domain.dto.ListResult;
 import com.example.anime.domain.model.Anime;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import com.example.anime.domain.model.projections.ProjectionAnimeShort;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +22,10 @@ import java.util.UUID;
 public class AnimeController {
     @Autowired
     private AnimeRepository animeRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private RecommendedService recommendedService;
 
     @GetMapping("/")
     public ResponseEntity<?> getAllAnime() {
@@ -56,6 +64,28 @@ public class AnimeController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id %s", id)));
+    }
+
+
+    @GetMapping("/recommended/")
+    public ResponseEntity<?> getRecommended(){
+        return ResponseEntity.ok().body(ListResult.list(recommendedService.getRecommended()));
+    }
+
+    @PostMapping("/recommended/")
+    public ResponseEntity<?> addRecommended(@RequestBody Anime anime, Authentication authentication){
+
+        if (userService.ifExists(authentication.getName())){
+            if(recommendedService.isValid(anime.animeid)){
+                UUID userid = userService.getUserId(authentication.getName());
+                recommendedService.save(anime.animeid, userid);
+                String animeName = animeRepository.findByAnimeid(anime.animeid, ProjectionAnimeShort.class).getName();
+                return ResponseEntity.ok().body(DisplayMessage.message(String.format("Added '%s' to recommended animes", animeName)));
+            }else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DisplayMessage.message("Incorrect data"));
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("Authentication required"));
     }
 
 }

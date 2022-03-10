@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable()
                 .authorizeRequests()
-                .mvcMatchers(HttpMethod.GET,"/files/", "/users/","/animes/").permitAll()
+                .mvcMatchers(HttpMethod.GET,"/files/", "/users/","/animes/", "/animes/recommended/").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/users/").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/animes/", "/files/").authenticated()
                 .mvcMatchers(HttpMethod.DELETE, "/anime/", "/user/", "/file/").authenticated()

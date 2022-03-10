@@ -11,5 +11,4 @@ import java.util.UUID;
 public interface GenreRepository extends JpaRepository<Genre, UUID> {
 
     List<ProjectionGenre>findBy();
-    ProjectionGenreDetails findByGenreid(UUID id);
-}
+    <T> T findByGenreid(UUID id, Class<T> type);}

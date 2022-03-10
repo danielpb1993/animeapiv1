@@ -34,7 +34,7 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getGenre(@PathVariable UUID id) {
-        ProjectionGenreDetails genre = genreRepository.findByGenreid(id);
+        ProjectionGenreDetails genre = genreRepository.findByGenreid(id, ProjectionGenreDetails.class);
         if (genre != null) {
             return ResponseEntity.ok().body(genre);
         }

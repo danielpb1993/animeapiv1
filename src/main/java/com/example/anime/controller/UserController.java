@@ -1,5 +1,6 @@
 package com.example.anime.controller;
 
+import com.example.anime.UserService;
 import com.example.anime.domain.dto.DisplayMessage;
 import com.example.anime.domain.dto.ListResult;
 import com.example.anime.domain.dto.UserResult;
@@ -33,6 +34,9 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private UserService userService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -54,9 +58,8 @@ public class UserController {
         List<Favorite> favorites = favoriteRepository.findByUserid(userID);
         List<ProjectionFavorite> favoritesAnime = favorites
                 .stream()
-                .map(fav -> {
-                    return animeRepository.findByAnimeid(fav.animeid, ProjectionFavorite.class);
-                }).collect(Collectors.toList());
+                .map(f -> animeRepository.findByAnimeid(f.animeid, ProjectionFavorite.class))
+                .collect(Collectors.toList());
         return ResponseEntity.ok().body(ListResult.list(favoritesAnime));
     }
 
@@ -86,7 +89,7 @@ public class UserController {
             return ResponseEntity.ok().body(favorite);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id '%s'", favorite.animeid)));
+                .body(DisplayMessage.message(String.format("No s 'ha trobat l'anime amd id '%s'", favorite.animeid)));
     }
 
     @DeleteMapping("/{id}")
@@ -114,11 +117,10 @@ public class UserController {
 
         if (user != null) {
             Favorite favorite = new Favorite();
-            favorite.userid =  user.userid;
-            favorite.animeid = id;
+            favorite.userid =  userService.getUserId(authentication.getName());            favorite.animeid = id;
             favoriteRepository.delete(favorite);
             return ResponseEntity.ok()
-                    .body(DisplayMessage.message(String.format("S'ha eliminat dels favorits l'anime amd id '%s'", id)));
+                    .body(DisplayMessage.message(String.format("S'ha eliminat l'anime amd id '%s' dels teus favorits", id)));
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
