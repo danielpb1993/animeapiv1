@@ -1,4 +1,4 @@
-package com.example.anime;
+package com.example.anime.services;
 
 import com.example.anime.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

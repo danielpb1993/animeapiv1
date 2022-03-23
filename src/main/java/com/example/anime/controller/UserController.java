@@ -1,6 +1,6 @@
 package com.example.anime.controller;
 
-import com.example.anime.UserService;
+import com.example.anime.services.UserService;
 import com.example.anime.domain.dto.DisplayMessage;
 import com.example.anime.domain.dto.ListResult;
 import com.example.anime.domain.dto.UserResult;

@@ -1,4 +1,4 @@
-package com.example.anime;
+package com.example.anime.services;
 
 import com.example.anime.domain.dto.AnimeData;
 import com.example.anime.domain.dto.RecommendedResponse;
@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 
 @Service
 public class RecommendedService {

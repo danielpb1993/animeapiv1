@@ -1,6 +1,5 @@
 package com.example.anime.domain.dto;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

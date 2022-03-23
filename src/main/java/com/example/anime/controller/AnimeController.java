@@ -1,10 +1,11 @@
 package com.example.anime.controller;
 
-import com.example.anime.AnimeService;
-import com.example.anime.RecommendedService;
-import com.example.anime.UserService;
+import com.example.anime.services.AnimeService;
+import com.example.anime.services.RecommendedService;
+import com.example.anime.services.UserService;
 import com.example.anime.domain.dto.DisplayMessage;
 import com.example.anime.domain.dto.ListResult;
+import com.example.anime.domain.dto.RatingRequest;
 import com.example.anime.domain.model.Anime;
 import com.example.anime.domain.model.projections.ProjectionAnime;
 import com.example.anime.repository.AnimeRepository;
@@ -96,4 +97,13 @@ public class AnimeController {
         return ResponseEntity.ok().body(ListResult.list(animeService.getRatingAnime()));
     }
 
+    @PostMapping("/rating/")
+    public ResponseEntity<?> addAnimeRating(@RequestBody RatingRequest requestRating, Authentication authentication){
+        if(!animeService.existAnime(requestRating.anime)){
+            animeService.AddRatingAnime(requestRating, authentication.getName());
+            return ResponseEntity.ok().body(DisplayMessage.message(String.format("Added rating to anime '%s'", requestRating.anime)));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message(String.format("The anime '%s' don't exist", requestRating.anime)));
+
+    }
 }
