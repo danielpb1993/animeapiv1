@@ -115,9 +115,10 @@ public class UserController {
     public ResponseEntity<?> deleteFavorite(@PathVariable UUID id, Authentication authentication) {
         User user = userRepository.findByUsername(authentication.getName());
 
-        if (user != null) {
+        if (userService.ifExists(authentication.getName())) {
             Favorite favorite = new Favorite();
-            favorite.userid =  userService.getUserId(authentication.getName());            favorite.animeid = id;
+            favorite.userid =  userService.getUserId(authentication.getName());
+            favorite.animeid = id;
             favoriteRepository.delete(favorite);
             return ResponseEntity.ok()
                     .body(DisplayMessage.message(String.format("S'ha eliminat l'anime amd id '%s' dels teus favorits", id)));

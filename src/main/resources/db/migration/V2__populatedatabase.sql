@@ -44,3 +44,10 @@ INSERT INTO favorite VALUES
    ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Anime IV')),
    ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Anime III')),
    ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Anime II'));
+
+INSERT INTO rating VALUES
+   ((SELECT username FROM usser WHERE username = 'user'),(SELECT name FROM anime WHERE name = 'Anime II'), 8),
+   ((SELECT username FROM usser WHERE username = 'user'),(SELECT name FROM anime WHERE name = 'Anime III'), 10),
+   ((SELECT username FROM usser WHERE username = 'user'),(SELECT name FROM anime WHERE name = 'Anime IV'), 6);
+   ((SELECT username FROM usser WHERE username = 'dani'),(SELECT name FROM anime WHERE name = 'Anime I'), 6.5),
+   ((SELECT username FROM usser WHERE username = 'dani'),(SELECT name FROM anime WHERE name = 'Anime IV'), 5),

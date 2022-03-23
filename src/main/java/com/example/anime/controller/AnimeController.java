@@ -1,5 +1,6 @@
 package com.example.anime.controller;
 
+import com.example.anime.AnimeService;
 import com.example.anime.RecommendedService;
 import com.example.anime.UserService;
 import com.example.anime.domain.dto.DisplayMessage;
@@ -26,6 +27,8 @@ public class AnimeController {
     private UserService userService;
     @Autowired
     private RecommendedService recommendedService;
+    @Autowired
+    AnimeService animeService;
 
     @GetMapping("/")
     public ResponseEntity<?> getAllAnime() {
@@ -86,6 +89,11 @@ public class AnimeController {
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("Authentication required"));
+    }
+
+    @GetMapping("/rating/")
+    public ResponseEntity<?> getAnimeRating(){
+        return ResponseEntity.ok().body(ListResult.list(animeService.getRatingAnime()));
     }
 
 }

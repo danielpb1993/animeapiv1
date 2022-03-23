@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,14 +31,29 @@ public class RecommendedService {
     private RecommendedRepository recommendedRepository;
 
     public List<?> getRecommended(){
-        return recommendedRepository.findAll().stream()
-                .map(r -> {
-                    RecommendedResponse recommendedResponse = new RecommendedResponse();
-                    recommendedResponse.genre = genreRepository.findByGenreid(r.genreid, Genre.class).label;
-                    Anime anime = animeRepository.findByAnimeid(r.animeid, Anime.class);
-                    recommendedResponse.animes.add(new AnimeData(anime.name, anime.type));
-                    return recommendedResponse;
+        List<Recommended> recommendedList = recommendedRepository.findAll();
+
+        Set<String> labels = recommendedList.stream()
+                .map(recommended ->
+                        genreRepository.findByGenreid(recommended.genreid, Genre.class).label)
+                .collect(Collectors.toSet());
+        List<RecommendedResponse> recommendedResponses = labels.stream()
+                .map(recommended -> {
+                    RecommendedResponse rr = new RecommendedResponse();
+                    rr.genre = recommended;
+                    return rr;
                 }).collect(Collectors.toList());
+        for (RecommendedResponse rr : recommendedResponses ) {
+            for (Recommended recommended: recommendedList ) {
+                String label =  genreRepository.findByGenreid(recommended.genreid, Genre.class).label;
+                if (label.equals(rr.genre)){
+                    Anime anime = animeRepository.findByAnimeid(recommended.animeid, Anime.class);
+                    rr.animes.add(new AnimeData(anime.name, anime.type));
+                }
+            }
+        }
+
+        return  recommendedResponses;
 
     }
 

@@ -1,7 +1,7 @@
 
 CREATE TABLE IF NOT EXISTS anime (
     animeid uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
-    name text,
+    name text NOT NULL UNIQUE,
     description text,
     type text,
     year_release smallint,
@@ -49,3 +49,8 @@ CREATE TABLE recommended(
      genreid uuid REFERENCES genre(genreid) ON DELETE CASCADE,
      PRIMARY KEY (userid, animeid, genreid));
 
+CREATE TABLE rating(
+  username varchar(24) REFERENCES usser(username) ON DELETE CASCADE,
+  anime text REFERENCES anime(name) ON DELETE CASCADE,
+  score numeric DEFAULT 0 CHECK (score <= 10),
+  PRIMARY KEY (username, anime));
