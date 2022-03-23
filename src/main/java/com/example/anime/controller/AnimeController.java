@@ -103,7 +103,7 @@ public class AnimeController {
             animeService.AddRatingAnime(requestRating, authentication.getName());
             return ResponseEntity.ok().body(DisplayMessage.message(String.format("Added rating to anime '%s'", requestRating.anime)));
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message(String.format("The anime '%s' don't exist", requestRating.anime)));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message(String.format("The anime '%s' doesn't exist", requestRating.anime)));
 
     }
 }
